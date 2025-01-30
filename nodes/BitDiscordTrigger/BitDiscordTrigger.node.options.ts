@@ -4,7 +4,6 @@ export const options: INodeProperties[] = [
 	{
 		displayName: 'Trigger Type',
 		name: 'type',
-
 		type: 'options',
 		options: [
 			{
@@ -12,6 +11,21 @@ export const options: INodeProperties[] = [
 				value: 'message',
 				description: 'When a message is sent in the selected channels',
 			},
+			{
+				name: 'Reaction',
+				value: 'reaction',
+				description: 'When a reaction is added to a message in the selected channels',
+			},
+			{
+				name: 'User Join',
+				value: 'user-join',
+				description: 'When a user joins the server',
+			},
+			{
+				name: 'User Leave',
+				value: 'user-leave',
+				description: 'When a user leaves the server',
+			}
 		],
 		default: 'message',
 		description:

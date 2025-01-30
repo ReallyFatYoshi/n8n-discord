@@ -1,4 +1,5 @@
-import { Client, GatewayIntentBits, GuildBasedChannel, ChannelType } from 'discord.js';
+import chalk from 'chalk';
+import { Client, GatewayIntentBits, GuildBasedChannel, ChannelType, GuildMember, PartialGuildMember } from 'discord.js';
 import ipc from 'node-ipc';
 import { ICredentials } from './helper';
 import settings from './settings';
@@ -22,7 +23,7 @@ export default function () {
 	});
 
 	client.once('ready', () => {
-		console.log(`Logged in as ${client.user?.tag}`);
+		console.log(chalk.gray("[!] ") + chalk.green(`Logged in as ${client.user?.tag}`));
 	});
 
 	ipc.config.id = 'bot';
@@ -40,59 +41,55 @@ export default function () {
 			// set the specific node parameters for a later iteration when we get messages
 			settings.triggerNodes[data.nodeId] = data.parameters;
 
+			const onGuildMemberAdd = (member: GuildMember) => {
+				ipc.server.emit(socket, 'guildMemberAdd', {
+					data: {
+						id: member.id,
+						tag: member.user.tag,
+						username: member.user.username,
+						guild: member.guild,
+						roles: member.roles.cache.map((role) => role),
+						is_bot: member.user.bot,
+						joined_at: member.joinedAt,
+						left_at: null,
+						created_at: member.user.createdAt,
+					},
+					nodeId: data.nodeId,
+				});
+			}
+			
+			const onGuildMemberRemove = (member: GuildMember | PartialGuildMember) => {
+				ipc.server.emit(socket, 'guildMemberRemove', {
+					data: {
+						id: member.id,
+						tag: member.user.tag,
+						username: member.user.username,
+						guild: member.guild,
+						roles: member.roles.cache.map((role) => role),
+						is_bot: member.user.bot,
+						joined_at: member.joinedAt,
+						left_at: new Date(Date.now()),
+						created_at: member.user.createdAt,
+					},
+					nodeId: data.nodeId,
+				});
+			}
+
 			// whenever a message is created this listener is called
 			const onMessageCreate = (message: any) => {
 				// iterate through all nodes and see if we need to trigger some
-                // @ts-ignore
-				for (const [nodeId, parameters] of Object.entries(settings.triggerNodes) as [string, any]) {
+				// @ts-ignore
+				for (const [nodeId, type] of Object.entries(settings.triggerNodes) as [string, string]) {
 					try {
 						// ignore messages of other bots
 						if (message.author.bot || message.author.system) return;
 
-						// const pattern = parameters.pattern;
-
-						// // check if executed by the proper role
-						// const userRoles = message.member?.roles.cache.map((role: any) => role.id);
-						// if (parameters.roleIds.length) {
-						// 	const hasRole = parameters.roleIds.some((role: any) => userRoles?.includes(role));
-						// 	if (!hasRole) return;
-						// }
-
-						// // check if executed by the proper channel
-						// if (parameters.channelIds.length) {
-						// 	const isInChannel = parameters.channelIds.some((channelId: any) =>
-						// 		message.channel.id?.includes(channelId),
-						// 	);
-						// 	if (!isInChannel) return;
-						// }
-
-						// // escape the special chars to properly trigger the message
-						// const escapedTriggerValue = String(parameters.value)
-						// 	.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
-						// 	.replace(/-/g, '\\x2d');
-
-						// const clientId = client.user?.id;
-						// const botMention = message.mentions.users.some((user: any) => user.id === clientId);
-
-						// let regStr = `^${escapedTriggerValue}$`;
-
-						// // return if we expect a bot mention, but bot is not mentioned
-						// if (pattern === 'botMention' && !botMention) return;
-						// else if (pattern === 'start' && message.content) regStr = `^${escapedTriggerValue}`;
-						// else if (pattern === 'end') regStr = `${escapedTriggerValue}$`;
-						// else if (pattern === 'contain') regStr = `${escapedTriggerValue}`;
-						// else if (pattern === 'regex') regStr = `${parameters.value}`;
-						// else if (pattern === 'every') regStr = `(.*)`;
-
-						// const reg = new RegExp(regStr, parameters.caseSensitive ? '' : 'i');
-
-						// if ((pattern === 'botMention' && botMention) || reg.test(message.content)) {
-							// Emit the message data to n8n
-							ipc.server.emit(socket, 'messageCreate', {
-								message,
-								author: message.author,
-								nodeId: nodeId,
-							});
+						// Emit the message data to n8n
+						ipc.server.emit(socket, 'messageCreate', {
+							message,
+							author: message.author,
+							nodeId: nodeId,
+						});
 						// }
 					} catch (e) {
 						console.log(e);
@@ -102,9 +99,14 @@ export default function () {
 
 			// Clear existing listeners for `messageCreate`
 			client.removeAllListeners('messageCreate');
+			client.removeAllListeners('guildMemberAdd');	
+			client.removeAllListeners('guildMemberRemove');
 			// Add new listener for `messageCreate`
 			client.on('messageCreate', onMessageCreate);
+			client.on('guildMemberAdd', onGuildMemberAdd);
+			client.on('guildMemberRemove', onGuildMemberRemove);
 		});
+
 		ipc.server.on('list:roles', listRoles.bind(null, ipc, client));
 		ipc.server.on('list:guilds', listGuilds.bind(null, ipc, client));
 		ipc.server.on('list:channels', (data: undefined, socket: any) => {

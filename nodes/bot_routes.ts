@@ -5,16 +5,9 @@ export function listRoles(ipc: any, client: Client, data: undefined, socket: any
 	try {
 		if (settings.ready) {
 			const guild = client.guilds.cache.first();
-			const roles = guild?.roles.cache ?? ([] as any);
+			const roles = guild?.roles.cache.map((role) => role);
 
-			const rolesList = roles.map((role: Role) => {
-				return {
-					name: role.name,
-					value: role.id,
-				};
-			});
-
-			ipc.server.emit(socket, 'list:roles', rolesList);
+			ipc.server.emit(socket, 'list:roles', roles);
 		}
 	} catch (e) {
 		console.log(`${e}`);
