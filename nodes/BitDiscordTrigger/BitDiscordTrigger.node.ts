@@ -32,6 +32,7 @@ export class BitDiscordTrigger implements INodeType {
 		},
 		icon: 'file:bit-logo.svg',
 		inputs: [],
+		// @ts-ignore
 		outputs: ['main'],
 		credentials: [
 			{
