@@ -1,5 +1,5 @@
 {
-  "name": "@bit-academy/n8n-discord",
+  "name": "bit-n8n-discord",
   "version": "0.0.1",
   "description": "A node that triggers a workflow whenever a message from discord is sent.",
   "keywords": [
