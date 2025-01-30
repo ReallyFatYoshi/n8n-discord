@@ -13,12 +13,12 @@
   "license": "MIT",
   "homepage": "",
   "author": {
-    "name": "katerlol",
-    "email": "katerlol@proton.me"
+    "name": "ReallyFatYoshi",
+    "email": "contact.reallyfatyoshi@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/katerlol/n8n-discord-trigger"
+    "url": "git+https://github.com/ReallyFatYoshi/n8n-discord.git"
   },
   "engines": {
     "node": ">=18.10",
