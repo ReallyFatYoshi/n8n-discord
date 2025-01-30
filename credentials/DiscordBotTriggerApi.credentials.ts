@@ -3,7 +3,7 @@ import { ICredentialType, INodeProperties } from 'n8n-workflow';
 export class DiscordBotTriggerApi implements ICredentialType {
 	name = 'discordBotTriggerApi';
 	displayName = 'Discord Bot Trigger API';
-	documentationUrl = 'https://github.com/katerlol/n8n-discord-trigger';
+	documentationUrl = 'https://github.com/ReallyFatYoshi/n8n-discord-trigger';
 	properties: INodeProperties[] = [
 		{
 			displayName: 'Client ID',
@@ -34,7 +34,7 @@ export class DiscordBotTriggerApi implements ICredentialType {
 			description: 'The API URL of the n8n instance',
 			type: 'string',
 			default: '',
-			placeholder: 'https://n8n.example.com/api/v1',
+			placeholder: 'https://n8n.bit-academy.nl/api/v1',
 		},
 	];
 }

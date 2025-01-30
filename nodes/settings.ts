@@ -1,4 +1,4 @@
-const settings: {
+class Settings extends Map<string, any> {
     ready: boolean;
     login: boolean;
     testMode: boolean;
@@ -6,18 +6,21 @@ const settings: {
     token: string;
     baseUrl: string;
     parameters: any;
-
     triggerNodes: any;
-} = {
-    ready: false,
-    login: false,
-    testMode: false,
-    clientId: '',
-    token: '',
-    baseUrl: '',
-    parameters: {},
 
-    triggerNodes: {},
+    constructor() {
+        super();
+        this.ready = false;
+        this.login = false;
+        this.testMode = false;
+        this.clientId = '';
+        this.token = '';
+        this.baseUrl = '';
+        this.parameters = {};
+        this.triggerNodes = {};
+    }
 }
+
+const settings = new Settings();
 
 export default settings;

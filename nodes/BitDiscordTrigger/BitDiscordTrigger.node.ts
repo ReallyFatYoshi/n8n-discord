@@ -5,7 +5,7 @@ import type {
     ITriggerResponse,
     INodePropertyOptions,
 } from 'n8n-workflow';
-import { options } from './DiscordTrigger.node.options';
+import { options } from './BitDiscordTrigger.node.options';
 import bot from '../bot';
 import ipc from 'node-ipc';
 import {
@@ -20,17 +20,17 @@ import settings from '../settings';
 // we start the bot if we are in the main process
 if (!process.send) bot();
 
-export class DiscordTrigger implements INodeType {
+export class BitDiscordTrigger implements INodeType {
     description: INodeTypeDescription = {
-        displayName: 'Discord Trigger',
-        name: 'discordTrigger',
+        displayName: 'Bit Discord Trigger',
+        name: 'bitDiscordTrigger',
         group: ['trigger', 'discord'],
         version: 1,
         description: 'Discord Trigger on message',
         defaults: {
             name: 'Discord Trigger',
         },
-        icon: 'file:discord-logo.svg',
+        icon: 'file:bit-logo.svg',
         inputs: [],
         outputs: ['main'],
         credentials: [
@@ -54,7 +54,7 @@ export class DiscordTrigger implements INodeType {
     };
 
     async trigger(this: ITriggerFunctions): Promise<ITriggerResponse> {
-
+        this.getCredentials('discordBotTriggerApi', 0);
         const credentials = (await this.getCredentials('discordBotTriggerApi').catch((e) => e)) as any as ICredentials;
 
         if (!credentials?.token) {
@@ -81,7 +81,7 @@ export class DiscordTrigger implements INodeType {
             });
 
             ipc.of.bot.on('messageCreate', ({ message, author, nodeId }: any) => {
-                if( this.getNode().id === nodeId) {
+                if(this.getNode().id === nodeId) {
                     this.emit([
                         this.helpers.returnJsonArray({
                             id: message.id,
