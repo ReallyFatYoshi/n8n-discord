@@ -1,4 +1,4 @@
-# n8n-nodes-discord-trigger
+# n8n-nodes-bit-discord
 
 ![n8n.io - Workflow Automation](https://raw.githubusercontent.com/n8n-io/n8n/master/assets/n8n-logo.png)
 

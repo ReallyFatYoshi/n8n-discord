@@ -28,7 +28,7 @@ export class BitDiscordTrigger implements INodeType {
 		version: 1,
 		description: 'Discord Trigger on message',
 		defaults: {
-			name: 'Discord Trigger',
+			name: 'Bit Discord Trigger',
 		},
 		icon: 'file:bit-logo.svg',
 		inputs: [],
