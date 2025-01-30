@@ -43,6 +43,7 @@ export default function () {
 			// whenever a message is created this listener is called
 			const onMessageCreate = (message: any) => {
 				// iterate through all nodes and see if we need to trigger some
+                // @ts-ignore
 				for (const [nodeId, parameters] of Object.entries(settings.triggerNodes) as [string, any]) {
 					try {
 						// ignore messages of other bots
