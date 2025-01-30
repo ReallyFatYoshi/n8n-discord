@@ -93,6 +93,7 @@ export class BitDiscordTrigger implements INodeType {
 							authorId: author.id,
 							authorName: author.username,
 							timestamp: message.createdTimestamp,
+							guild: message.guild?.id,
 							listenValue: this.getNodeParameter('value', ''),
 						}),
 					]);

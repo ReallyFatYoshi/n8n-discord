@@ -48,51 +48,51 @@ export default function () {
 						// ignore messages of other bots
 						if (message.author.bot || message.author.system) return;
 
-						const pattern = parameters.pattern;
+						// const pattern = parameters.pattern;
 
-						// check if executed by the proper role
-						const userRoles = message.member?.roles.cache.map((role: any) => role.id);
-						if (parameters.roleIds.length) {
-							const hasRole = parameters.roleIds.some((role: any) => userRoles?.includes(role));
-							if (!hasRole) return;
-						}
+						// // check if executed by the proper role
+						// const userRoles = message.member?.roles.cache.map((role: any) => role.id);
+						// if (parameters.roleIds.length) {
+						// 	const hasRole = parameters.roleIds.some((role: any) => userRoles?.includes(role));
+						// 	if (!hasRole) return;
+						// }
 
-						// check if executed by the proper channel
-						if (parameters.channelIds.length) {
-							const isInChannel = parameters.channelIds.some((channelId: any) =>
-								message.channel.id?.includes(channelId),
-							);
-							if (!isInChannel) return;
-						}
+						// // check if executed by the proper channel
+						// if (parameters.channelIds.length) {
+						// 	const isInChannel = parameters.channelIds.some((channelId: any) =>
+						// 		message.channel.id?.includes(channelId),
+						// 	);
+						// 	if (!isInChannel) return;
+						// }
 
-						// escape the special chars to properly trigger the message
-						const escapedTriggerValue = String(parameters.value)
-							.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
-							.replace(/-/g, '\\x2d');
+						// // escape the special chars to properly trigger the message
+						// const escapedTriggerValue = String(parameters.value)
+						// 	.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
+						// 	.replace(/-/g, '\\x2d');
 
-						const clientId = client.user?.id;
-						const botMention = message.mentions.users.some((user: any) => user.id === clientId);
+						// const clientId = client.user?.id;
+						// const botMention = message.mentions.users.some((user: any) => user.id === clientId);
 
-						let regStr = `^${escapedTriggerValue}$`;
+						// let regStr = `^${escapedTriggerValue}$`;
 
-						// return if we expect a bot mention, but bot is not mentioned
-						if (pattern === 'botMention' && !botMention) return;
-						else if (pattern === 'start' && message.content) regStr = `^${escapedTriggerValue}`;
-						else if (pattern === 'end') regStr = `${escapedTriggerValue}$`;
-						else if (pattern === 'contain') regStr = `${escapedTriggerValue}`;
-						else if (pattern === 'regex') regStr = `${parameters.value}`;
-						else if (pattern === 'every') regStr = `(.*)`;
+						// // return if we expect a bot mention, but bot is not mentioned
+						// if (pattern === 'botMention' && !botMention) return;
+						// else if (pattern === 'start' && message.content) regStr = `^${escapedTriggerValue}`;
+						// else if (pattern === 'end') regStr = `${escapedTriggerValue}$`;
+						// else if (pattern === 'contain') regStr = `${escapedTriggerValue}`;
+						// else if (pattern === 'regex') regStr = `${parameters.value}`;
+						// else if (pattern === 'every') regStr = `(.*)`;
 
-						const reg = new RegExp(regStr, parameters.caseSensitive ? '' : 'i');
+						// const reg = new RegExp(regStr, parameters.caseSensitive ? '' : 'i');
 
-						if ((pattern === 'botMention' && botMention) || reg.test(message.content)) {
+						// if ((pattern === 'botMention' && botMention) || reg.test(message.content)) {
 							// Emit the message data to n8n
 							ipc.server.emit(socket, 'messageCreate', {
 								message,
 								author: message.author,
 								nodeId: nodeId,
 							});
-						}
+						// }
 					} catch (e) {
 						console.log(e);
 					}
